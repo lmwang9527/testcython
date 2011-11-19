@@ -1,0 +1,44 @@
+## require to run in ipython
+import numpy as np
+import testpython as tp
+import testcython as tc
+
+n = 60000
+imin = 12; imax = 1500
+all = np.random.randint(imin, imax, n).astype('i')  #population
+size = 5000
+prob = all / float(all.sum())
+nagents = 5000
+nalts = 10
+sample_size = (nagents, nalts)
+
+#sample = probsample_noreplace(n, size, prob, return_index=True)
+print "probsample_noreplace in python[current]:"
+%timeit -n2 -r3 tp.probsample_noreplace(n, size, prob, return_index=True)
+
+R = np.random.uniform(size=size)
+sample = np.zeros(size, dtype='i')
+#ps.ProbSampleNoReplace(n, prob, R, size, sample)
+print "ProbSampleNoReplace in cython:"
+%timeit -n2 -r3 tc.ProbSampleNoReplace(n, prob, R, size, sample)
+
+COMMENTED = \
+"""
+results = np.zeros(shape=sample_size, dtype='i')
+print "prob2dsample in python (iterate by row):"
+%timeit -n2 -r3 tp.prob2dsample(all, nagents, nalts, prob, results)
+
+results = np.zeros(shape=sample_size, dtype='i')
+#tc.prob2dsample(all, nagents, nalts, prob, exclude_index=None, replace=0, results=results)
+print "prob2dsample in cython (iterate by row):"
+%timeit -n2 -r3 tc.prob2dsample(all, nagents, nalts, prob, exclude_index=None, replace=0, results=results)
+
+from opus_core.sampling_toolbox import prob2dsample
+#results = prob2dsample(all, sample_size, prob, return_index=True)
+print "prob2dsample in python(iterate by col)[current]:"
+%timeit -n2 -r3 prob2dsample(all, sample_size, prob, return_index=True)
+
+#results = np.zeros(shape=sample_size, dtype='i')
+#tc.prob2dsample2(all, nagents, nalts, prob, exclude_index=None, replace=0, results=results)
+#%timeit -n2 -r3 tc.prob2dsample2(all, nagents, nalts, prob, exclude_index=None, replace=0, results=results)
+"""
