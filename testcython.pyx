@@ -47,26 +47,18 @@ cdef class Uniform:
         for i in xrange(N):
             out[i] = self.get()
 
-cdef extern from "ndarraytypes.h":
-    ctypedef enum NPY_SEARCHSIDE:
-        NPY_SEARCHLEFT = 0
-        NPY_SEARCHRIGHT = 1
-
 def ProbSampleReplaceVec(int n,
                       np.ndarray[double, ndim=1] p, 
                       int size, np.ndarray[int, ndim=1] results):
     cdef int axis = 0
     cdef np.ndarray[double, ndim=1] sample_prob = np.empty(size, np.float64)
     cdef np.ndarray[double, ndim=1] cum_prob = np.empty(size, np.float64)
-    #side = np.PyArray_SearchsideConverter(cum_prob, np.NPY_SEARCHLEFT)
-    #cdef np.NPY_SEARCHSIDE side = np.NPY_SEARCHLEFT
-    cdef NPY_SEARCHSIDE side = NPY_SEARCHRIGHT
 
     np.PyArray_CumSum(p, axis, np.NPY_FLOAT64, cum_prob)
     u = Uniform(loc=0.0, scale=cum_prob[-1])
     u.sample(size, sample_prob)
 
-    results = np.PyArray_SearchSorted(cum_prob, sample_prob, side)
+    results = np.PyArray_SearchSorted(cum_prob, sample_prob, np.NPY_SEARCHRIGHT)
     return results
 
 @cython.boundscheck(False) # turn of bounds-checking for entire function
