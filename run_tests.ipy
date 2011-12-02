@@ -20,7 +20,7 @@ R = np.random.uniform(size=size)
 sample = np.zeros(size, dtype='i')
 #ps.ProbSampleNoReplace(n, prob, R, size, sample)
 print "ProbSampleNoReplace in cython:"
-%timeit -n2 -r3 tc.ProbSampleNoReplace(n, prob, R, size, sample)
+%timeit -n2 -r3 tc.ProbSampleReplaceVec(n, prob, size, sample)
 
 COMMENTED = \
 """

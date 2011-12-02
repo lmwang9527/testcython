@@ -51,14 +51,20 @@ def ProbSampleReplaceVec(int n,
                       np.ndarray[double, ndim=1] p, 
                       int size, np.ndarray[int, ndim=1] results):
     cdef int axis = 0
+    cdef int iside = 0
     cdef np.ndarray[double, ndim=1] sample_prob = np.empty(size, np.float64)
-    cdef np.ndarray[double, ndim=1] cum_prob = np.empty(size, np.float64)
+    cdef np.ndarray[double, ndim=1] cum_prob = np.empty(n, np.float64)
+
+    #cdef np.NPY_SEARCHSIDE side 
+    #side = np.NPY_SEARCHLEFT
+    #side = <np.NPY_SEARCHSIDE> 1
+    #side = <np.NPY_SEARCHSIDE> np.PyArray_SearchsideConverter(cum_prob, side="left")
 
     np.PyArray_CumSum(p, axis, np.NPY_FLOAT64, cum_prob)
     u = Uniform(loc=0.0, scale=cum_prob[-1])
     u.sample(size, sample_prob)
 
-    results = np.PyArray_SearchSorted(cum_prob, sample_prob, np.NPY_SEARCHRIGHT)
+    results = np.PyArray_SearchSorted(cum_prob, sample_prob, np.NPY_SEARCHLEFT)
     return results
 
 @cython.boundscheck(False) # turn of bounds-checking for entire function
