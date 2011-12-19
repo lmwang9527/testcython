@@ -1,7 +1,6 @@
 ## require to run in ipython
 import numpy as np
 import testpython as tp
-import testcython as tc
 
 n = 60000
 imin = 12; imax = 1500
@@ -14,13 +13,18 @@ sample_size = (nagents, nalts)
 
 #sample = probsample_noreplace(n, size, prob, return_index=True)
 print "probsample_noreplace in python[current]:"
-%timeit -n2 -r3 tp.probsample_noreplace(n, size, prob, return_index=True)
+%timeit tp.probsample_noreplace(n, size, prob, return_index=True)
 
+#import testcython as tc
 R = np.random.uniform(size=size)
 sample = np.zeros(size, dtype='i')
 #ps.ProbSampleNoReplace(n, prob, R, size, sample)
-print "ProbSampleNoReplace in cython:"
-%timeit -n2 -r3 tc.ProbSampleReplaceVec(n, prob, size, sample)
+#print "ProbSampleNoReplace in cython:"
+#%timeit tc.ProbSampleReplaceVec(n, prob, size, sample)
+
+import numpy.random.mtrand as mtrand
+print "ProbSample NoReplace in mtrand:"
+%timeit mtrand.choice(n, size=size, replace=False, p=prob)
 
 COMMENTED = \
 """
