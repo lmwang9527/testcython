@@ -22,9 +22,12 @@ sample = np.zeros(size, dtype='i')
 #print "ProbSampleNoReplace in cython:"
 #%timeit tc.ProbSampleReplaceVec(n, prob, size, sample)
 
-import numpy.random.mtrand as mtrand
-print "ProbSample NoReplace in mtrand:"
-%timeit mtrand.choice(n, size=size, replace=False, p=prob)
+if np.__version__ >= '2.0.0':
+	import numpy.random.mtrand as mtrand
+	print "ProbSample NoReplace in mtrand:"
+	%timeit mtrand.choice(n, size=size, replace=False, p=prob)
+else:
+	print 'numpy version lower than 2.0.0; mtrand testing skipped'
 
 COMMENTED = \
 """
